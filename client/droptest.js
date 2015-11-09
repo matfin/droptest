@@ -24,6 +24,7 @@ Template.droptest.events({
 
 		Meteor.call('droptransfer', files, (err, res) => {
 			console.log(`We got error: ${err} and result: ${res}`);
+			console.log(res);
 		});
 
 		console.log(files.length);

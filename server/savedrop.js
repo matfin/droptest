@@ -33,6 +33,6 @@ Meteor.methods({
 
 let saveDrop = (file) => {
 	return new Promise((resolve, reject) => {
-		Meteor.setTimeout(resolve, 8000);
+		Meteor.setTimeout(resolve, 1500);
 	});
 }
