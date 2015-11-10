@@ -29,12 +29,13 @@ Template.droptest.events({
 
 				let reader 	= new FileReader(),
 						file 		= files[index];
-						
+
 				/**
 				 *	File has loaded
 				 */
 				reader.onload = (e) => {
-					resolve({index: index, result: e});
+					file.data = e.target.result;
+					resolve(file);
 				};
 
 				/**
@@ -49,24 +50,29 @@ Template.droptest.events({
 				 */
 				reader.readAsBinaryString(file);
 
-				// Meteor.setTimeout(() => {
-				// 	resolve({done: `At index yes: ${index}`});
-				// }, 1000);
 			}));
 		});
 
-		Promise.all(promises).then((result) => {
-			console.log('Success: ', result);
-		}).catch((error) => {	
-			console.log(`Error encountered: ${error}`);
+		Promise.all(promises).then((processed_files) => {
+			console.log(processed_files, ' is what we have here!');
+
+			processed_files = processed_files.map((file) => { 
+				return {
+					lastModified: file.lastModified,
+					name: file.name,
+					size: file.size,
+					type: file.type,
+					data: file.data
+				};
+			});
+
+			Meteor.call('droptransfer', processed_files, (err, res) => {
+				console.log(err, res);
+			});
+
+		}).catch((err) => {	
+			console.log(`Error encountered: ${err}`);
 		});
-
-		// console.log(files, Object.keys(files));
-
-		// Meteor.call('droptransfer', files, (err, res) => {
-		// 	console.log(`We got error: ${err} and result: ${res}`);
-		// 	console.log(res);
-		// });
 
 		return false;
 	}
